@@ -1,4 +1,4 @@
- test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { permitir } from '../src/lib/limitador.js';
 
