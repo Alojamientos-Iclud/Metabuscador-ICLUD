@@ -117,7 +117,7 @@ export default function Buscador() {
         <nav className="cuenta">
           {usuario ? (
             <>
-              <span>Hola, {usuario.nombre}</span>
+              <span>Hola, {usuario.gmail}</span>
               <button className="enlace" onClick={salir}>Cerrar sesión</button>
             </>
           ) : (

@@ -1,19 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql" 
 }
 
+// =================
+// Modelos chotos
+// =================
+
+model hotel {
+  id        Int      @id @default(autoincrement())
+  nombre      String
+  localizacion  String
+  cantidad_habitaciones     Int
+  imagen_h String? 
+  descripcion String
+  precio  Int
+  tiene_catering Boolean
+  fecha_subido DateTime @default(now())
+  fecha_actualizado DateTime @updatedAt
+} 
+model Formulario {
+  id        Int      @id @default(autoincrement())
+  nombre_completo     String
+  gmail  String
+  cantidad_huespedes   Int
+  llegada DateTime @db.Date
+  salida DateTime @db.Date
+  fecha_subido DateTime @default(now())
+  fecha_actualizado DateTime @updatedAt
+} 
+
 model Usuario {
-  id            Int        @id @default(autoincrement())
-  nombre        String
-  email         String     @unique
-  passwordHash  String
-  fechaRegistro DateTime   @default(now())
-  favoritos     Favorito[]
+  id                  Int        @id @default(autoincrement())
+  gmail               String
+  password            String
+  estatus             String
+  fecha_subido        DateTime   @default(now())
+  fecha_actualizado   DateTime   @updatedAt
+  favoritos           Favorito[] 
 }
 
 model Favorito {

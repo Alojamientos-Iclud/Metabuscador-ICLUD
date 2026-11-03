@@ -14,11 +14,11 @@ export const POST = conErrores(async (request) => {
   const b = await leerJson(request);
   const email = String(b.email ?? '').trim().toLowerCase();
   const password = String(b.password ?? '');
-  const usuario = await prisma.usuario.findUnique({ where: { email } });
-  const ok = usuario && (await bcrypt.compare(password, usuario.passwordHash));
+  const usuario = await prisma.usuario.findFirst({ where: { gmail: email } });
+  const ok = usuario && (await bcrypt.compare(password, usuario.password));
   if (!ok) return json({ error: 'Email o contraseña incorrectos.' }, 401);
 
-  const respuesta = NextResponse.json({ usuario: { id: usuario.id, nombre: usuario.nombre } });
+  const respuesta = NextResponse.json({ usuario: { id: usuario.id, gmail: usuario.gmail } });
   fijarSesion(respuesta, usuario);
   return respuesta;
 });

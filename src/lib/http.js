@@ -7,7 +7,7 @@ export const conErrores = (handler) => async (...args) => {
   try {
     return await handler(...args);
   } catch (e) {
-    console.error(e);
+   console.error('Error en login:', e);
     return json({ error: 'Error interno del servidor.' }, 500);
   }
 };

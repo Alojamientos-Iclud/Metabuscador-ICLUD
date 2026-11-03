@@ -10,5 +10,5 @@ export const GET = conErrores(async (request) => {
   if (!id) return json({ error: 'Iniciá sesión para continuar.' }, 401);
   const u = await prisma.usuario.findUnique({ where: { id } });
   if (!u) return json({ error: 'Sesión inválida.' }, 401);
-  return json({ usuario: { id: u.id, nombre: u.nombre } });
+  return json({ usuario: { id: u.id, gmail: u.gmail } });
 });
