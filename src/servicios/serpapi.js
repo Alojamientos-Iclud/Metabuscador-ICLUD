@@ -1,5 +1,5 @@
 const API = 'https://serpapi.com/search.json';
-
+import { precioPorHuesped } from '../lib/calculos.js';
 function urlSegura(valor) {
   try {
     const url = new URL(valor);
@@ -42,6 +42,12 @@ function normalizar(propiedad, filtros) {
   if (filtros.precioMax && precioNumero > filtros.precioMax) return null;
   if (!filtros.servicios.every((servicio) => tieneServicio(propiedad, servicio))) return null;
 
+  // funcion de calcular precio x huesped
+  const precioPorHuespedValue = precioPorHuesped(precioNumero, filtros.huespedes);
+
+  
+
+
   const imagen = urlSegura(propiedad.images?.[0]?.thumbnail);
   const rating = Number.isFinite(propiedad.overall_rating)
     ? `Calificación ${propiedad.overall_rating}/5.`
@@ -61,7 +67,14 @@ function normalizar(propiedad, filtros) {
     url: urlDeOferta(propiedad, filtros),
     imagen,
     servicios: amenities,
+    huespedes: filtros.huespedes,
+    porHuespedNumero: precioPorHuespedValue,
+    porHuesped: precioPorHuespedValue != null
+      ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(precioPorHuespedValue)
+      : null,
+
   };
+  
 }
 
 export async function buscarEnSerpApi(filtros, { fetchImpl = fetch } = {}) {
