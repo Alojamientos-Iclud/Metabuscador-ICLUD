@@ -31,6 +31,9 @@ export function TarjetaResultado({ r, esFavorito, onFavorito }) {
         <div className="precio">
           <strong>{r.precio}</strong>
           {r.precio !== 'No disponible' && <span>por noche</span>}
+          {r.porHuespedNumero != null && r.huespedes > 1 && (   //ACA YA MUESTRO EL PRECIO POR HUESPED SI HAY MAS DE 1
+          <span>≈ {r.porHuesped} por huésped</span>
+)}
         </div>
         <button className="fav" aria-pressed={esFavorito} onClick={onFavorito}>
           {esFavorito ? '♥ Guardado' : '♡ Guardar'}
