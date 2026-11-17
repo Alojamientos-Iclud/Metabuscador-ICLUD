@@ -9,7 +9,9 @@ export async function ejecutarMetabusqueda(body, { buscar = buscarEnSerpApi } = 
 
   try {
     const resultados = await buscar(filtros);
-    return { status: 200, cuerpo: { ok: true, resultados } };
+    // Se devuelven también los filtros ya validados: el endpoint los usa
+    // para guardar la búsqueda en el historial del usuario.
+    return { status: 200, cuerpo: { ok: true, resultados }, filtros };
   } catch (e) {
     console.error('Fallo en /metabuscar:', e.message);
     return {

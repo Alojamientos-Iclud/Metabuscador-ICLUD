@@ -45,7 +45,12 @@ model Usuario {
   estatus             String
   fecha_subido        DateTime   @default(now())
   fecha_actualizado   DateTime   @updatedAt
-  favoritos           Favorito[] 
+  favoritos           Favorito[]
+  busquedas           Busqueda[]
+
+  // Contador "cacheado": guarda el total de busquedas ya calculado.
+  // Evita tener que contar fila por fila cada vez que se abre la pagina.
+  busquedasTotal      Int        @default(0)
 }
 
 model Favorito {
@@ -59,4 +64,19 @@ model Favorito {
   fechaGuardado     DateTime @default(now())
 
   @@unique([idUsuario, urlOrigen])
+}
+
+// Historial: una fila por cada busqueda que hace un usuario logueado.
+// Es la fuente de verdad del contador (se puede recalcular desde aca).
+model Busqueda {
+  id         Int      @id @default(autoincrement())
+  idUsuario  Int
+  usuario    Usuario  @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+  destino    String
+  huespedes  Int
+  fecha      DateTime @default(now())
+
+  // Indice clave: hace que contar/listar las busquedas de UN usuario
+  // sea instantaneo, sin recorrer toda la tabla.
+  @@index([idUsuario, fecha(sort: Desc)])
 }

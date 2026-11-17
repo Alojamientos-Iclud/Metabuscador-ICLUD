@@ -14,6 +14,8 @@ h1, h2, .marca, .precio strong { font-family: "Bricolage Grotesque", system-ui, 
 .barra { display: flex; justify-content: space-between; align-items: center; padding: 14px clamp(16px, 4vw, 40px); border-bottom: 1px solid var(--linea); background: var(--superficie); }
 .marca { font-weight: 700; font-size: 1.5rem; letter-spacing: .04em; color: var(--mar); text-decoration: none; }
 .cuenta { display: flex; gap: 16px; align-items: center; font-size: .95rem; }
+.contador { background: var(--mar); color: var(--sobre-mar); border-radius: 999px; padding: 3px 12px; font-size: .8rem; font-weight: 500; white-space: nowrap; }
+.contador strong { font-size: .95rem; font-weight: 700; }
 
 .layout { display: grid; grid-template-columns: 340px 1fr; gap: 28px; padding: 28px clamp(16px, 4vw, 40px); max-width: 1200px; margin: 0 auto; align-items: start; }
 @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }

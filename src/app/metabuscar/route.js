@@ -2,6 +2,8 @@
 import { json, leerJson } from '@/lib/http';
 import { permitir, ipDe } from '@/lib/limitador';
 import { ejecutarMetabusqueda } from '@/lib/metabuscar';
+import { usuarioId } from '@/lib/auth';
+import { registrarBusqueda } from '@/lib/busquedas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,6 +23,21 @@ export async function POST(request) {
     }, 500);
   }
 
-  const { status, cuerpo } = await ejecutarMetabusqueda(await leerJson(request));
+  const { status, cuerpo, filtros } = await ejecutarMetabusqueda(await leerJson(request));
+
+  // El id sale de la cookie firmada, nunca del body: el usuario no puede
+  // inflar el contador de otra cuenta.
+  const id = usuarioId(request);
+
+  // Solo se cuentan búsquedas válidas y de usuarios logueados.
+  if (cuerpo.ok && id) {
+    try {
+      cuerpo.busquedas = await registrarBusqueda(id, filtros);
+    } catch (e) {
+      // Si falla el contador, la búsqueda igual se devuelve: es un dato secundario.
+      console.error('No se pudo registrar la búsqueda:', e.message);
+    }
+  }
+
   return json(cuerpo, status);
 }

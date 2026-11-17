@@ -18,7 +18,7 @@ export const POST = conErrores(async (request) => {
   const ok = usuario && (await bcrypt.compare(password, usuario.password));
   if (!ok) return json({ error: 'Email o contraseña incorrectos.' }, 401);
 
-  const respuesta = NextResponse.json({ usuario: { id: usuario.id, gmail: usuario.gmail } });
+  const respuesta = NextResponse.json({ usuario: { id: usuario.id, gmail: usuario.gmail, busquedas: usuario.busquedasTotal } });
   fijarSesion(respuesta, usuario);
   return respuesta;
 });

@@ -25,7 +25,7 @@ export const POST = conErrores(async (request) => {
     const usuario = await prisma.usuario.create({
       data: { gmail: email, password: await bcrypt.hash(password, 12), estatus: 'activo' },
     });
-    const respuesta = NextResponse.json({ usuario: { id: usuario.id, gmail: usuario.gmail } }, { status: 201 });
+    const respuesta = NextResponse.json({ usuario: { id: usuario.id, gmail: usuario.gmail, busquedas: usuario.busquedasTotal } }, { status: 201 });
     fijarSesion(respuesta, usuario);
     return respuesta;
   } catch (e) {
