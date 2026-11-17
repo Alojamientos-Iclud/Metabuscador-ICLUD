@@ -16,6 +16,7 @@ function Aviso({ titulo, texto, error = false }) {
 
 export default function Buscador() {
   const [usuario, setUsuario] = useState(null);
+  const [busquedas, setBusquedas] = useState(0); // contador de búsquedas de la cuenta
   const [favoritos, setFavoritos] = useState([]);
   const [vista, setVista] = useState('busqueda'); // busqueda | favoritos
   const [estado, setEstado] = useState('inicio'); // inicio | cargando | resultados | vacio | error
@@ -31,7 +32,9 @@ export default function Buscador() {
   useEffect(() => {
     (async () => {
       try {
-        setUsuario((await api('/api/auth/yo')).usuario);
+        const { usuario: u } = await api('/api/auth/yo');
+        setUsuario(u);
+        setBusquedas(u.busquedas ?? 0);
         await cargarFavoritos();
       } catch { /* sin sesión */ }
     })();
@@ -47,6 +50,8 @@ export default function Buscador() {
         setMensajeError(datos.error || 'Error inesperado.');
         return setEstado('error');
       }
+      // El endpoint ya devuelve el total actualizado: no hace falta otra consulta.
+      if (typeof datos.busquedas === 'number') setBusquedas(datos.busquedas);
       setResultados(datos.resultados);
       setEstado(datos.resultados.length ? 'resultados' : 'vacio');
     } catch {
@@ -75,12 +80,14 @@ export default function Buscador() {
   async function salir() {
     await api('/api/auth/logout', { method: 'POST' });
     setUsuario(null);
+    setBusquedas(0);
     setFavoritos([]);
     setVista('busqueda');
   }
 
   async function alIniciarSesion(u) {
     setUsuario(u);
+    setBusquedas(u.busquedas ?? 0);
     await cargarFavoritos();
     setAuth(null);
   }
@@ -118,6 +125,9 @@ export default function Buscador() {
           {usuario ? (
             <>
               <span>Hola, {usuario.gmail}</span>
+              <span className="contador" title="Cantidad de búsquedas hechas con esta cuenta" aria-live="polite">
+                Contador: <strong>{busquedas}</strong> {busquedas === 1 ? 'búsqueda' : 'búsquedas'}
+              </span>
               <button className="enlace" onClick={salir}>Cerrar sesión</button>
             </>
           ) : (
